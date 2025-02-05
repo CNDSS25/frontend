@@ -1,7 +1,8 @@
 import {
   HomeIcon,
   BuildingOffice2Icon,
-  PresentationChartLineIcon
+  PresentationChartLineIcon,
+  UserIcon
 } from '@heroicons/react/24/outline'
 
 const links = [
@@ -11,7 +12,12 @@ const links = [
     href: '/dashboard/properties',
     icon: BuildingOffice2Icon
   },
-  { name: 'Stocks', href: '/dashboard/stocks', icon: PresentationChartLineIcon }
+  {
+    name: 'Stocks',
+    href: '/dashboard/stocks',
+    icon: PresentationChartLineIcon
+  },
+  { name: 'User', href: '/dashboard/user', icon: UserIcon }
 ]
 
 export default function NavLinks() {
