@@ -31,6 +31,7 @@ export default function LoginForm() {
       if (!response.ok) {
         setError('Invalid email or password')
       }
+      //FIXME: nicht so legga
       window.location.href = '/dashboard'
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred')
