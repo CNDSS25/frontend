@@ -1,4 +1,8 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline'
+import {
+  CheckIcon,
+  ClockIcon,
+  ArrowPathIcon
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 
 export default function PropertyStatus({
@@ -26,7 +30,7 @@ export default function PropertyStatus({
       {availability_status === 'rented' ? (
         <>
           Rented
-          <ClockIcon className='ml-1 w-4 text-gray-500' />
+          <ArrowPathIcon className='ml-1 w-4 text-gray-500' />
         </>
       ) : null}
       {availability_status === 'available' ? (
