@@ -22,7 +22,6 @@ export default function SideNav() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      console.log('User logged out successfully')
       //FIXME: Nicht so legga
       window.location.href = '/'
       //router.replace('/')

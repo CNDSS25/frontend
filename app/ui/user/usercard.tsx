@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Input } from '@heroui/input'
 import { Button } from './button'
-import { Spinner } from '@heroui/spinner'
 
+//TODO: make it prettier, pls
 export default function UserProfile() {
   const [user, setUser] = useState({
     id: '',
