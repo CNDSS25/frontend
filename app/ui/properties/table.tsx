@@ -3,9 +3,12 @@ import PropertyStatus from '@/app/ui/properties/status'
 import { formatCurrency } from '@/app/lib/utils'
 import { fetchProperties } from '@/app/lib/data'
 import { Property } from '@/app/lib/definitions'
+import { cookies } from 'next/headers'
 
 export default async function PropertiesTable() {
-  const properties = await fetchProperties()
+  const cookieStore = await cookies()
+  const token = cookieStore.get('session_id')?.value
+  const properties = await fetchProperties(token)
 
   // @ts-ignore
   return (
