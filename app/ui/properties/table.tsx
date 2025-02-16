@@ -10,7 +10,6 @@ export default async function PropertiesTable() {
   const token = cookieStore.get('session_id')?.value
   const properties = await fetchProperties(token)
 
-  // @ts-ignore
   return (
     <div className='mt-6 flow-root'>
       <div className='inline-block min-w-full align-middle'>
