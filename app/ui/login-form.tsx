@@ -20,6 +20,9 @@ export default function LoginForm() {
     setError(null)
 
     try {
+      //const apiUrl = process.env.user_service_url
+      //console.log('ApiURL:' + apiUrl)
+      //TODO: make it work, ffs! fetch on server side needed
       const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
