@@ -16,8 +16,8 @@ export default function PropertyStatus({
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
           'bg-gray-100 text-gray-500': availability_status === 'pending',
-          'bg-amber-400 text-black': availability_status === 'rented',
-          'bg-green-500 text-white': availability_status === 'available'
+          'bg-amber-400 text-black': availability_status === 'available',
+          'bg-green-500 text-white': availability_status === 'rented'
         }
       )}
     >

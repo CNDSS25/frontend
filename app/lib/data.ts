@@ -1,8 +1,7 @@
 export async function fetchProperties(token: any) {
   try {
     const apiUrl = process.env.property_service_url
-    console.log(apiUrl)
-    const res = await fetch(apiUrl + '/properties/', {
+    const res = await fetch(apiUrl + '/ownedProperties/', {
       method: 'GET',
       credentials: 'include',
       headers: {
