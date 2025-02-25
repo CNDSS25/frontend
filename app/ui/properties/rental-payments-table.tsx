@@ -1,11 +1,9 @@
 // import { UpdateProperty, DeleteProperty } from '@/app/ui/properties/buttons'
-import PropertyStatus from '@/app/ui/properties/status'
 import { formatCurrency, formatDateToLocal } from '@/app/lib/utils'
 import { fetchRentalIncome } from '@/app/lib/data'
-import { Property } from '@/app/lib/definitions'
 import { cookies } from 'next/headers'
 
-export default async function RentalIncomeTable({
+export default async function RentalPaymentsTable({
   isPaid
 }: {
   isPaid: boolean
@@ -13,20 +11,44 @@ export default async function RentalIncomeTable({
   const cookieStore = await cookies()
   const token = cookieStore.get('session_id')?.value
   const properties = await fetchRentalIncome(token, isPaid)
-  const outstandingPayments = properties.flatMap(prop =>
-    Array.isArray(prop.rental_income)
-      ? prop.rental_income
-          .filter(income => income.status === 'Pending')
-          .map(income => ({
+  const outstandingPayments = properties.flatMap(prop => {
+    if (Array.isArray(prop.rental_income) && prop.rental_income.length > 0) {
+      const lastIncome = prop.rental_income[prop.rental_income.length - 1]
+      if (lastIncome.status === 'Pending') {
+        return [
+          {
             propertyTitle: prop.title,
             propertyLocation: prop.location,
-            date: income.date,
-            amount: income.amount,
-            tenant: income.tenant
-          }))
-      : []
-  )
-  console.log(outstandingPayments)
+            date: lastIncome.date,
+            amount: lastIncome.amount,
+            tenant: lastIncome.tenant,
+            paymentMethod: lastIncome.payment_method,
+            status: lastIncome.status
+          }
+        ]
+      }
+    }
+    return []
+  })
+  const receivedPayments = properties.flatMap(prop => {
+    if (Array.isArray(prop.rental_income) && prop.rental_income.length > 0) {
+      const lastIncome = prop.rental_income[prop.rental_income.length - 1]
+      if (lastIncome.status === 'Paid') {
+        return [
+          {
+            propertyTitle: prop.title,
+            propertyLocation: prop.location,
+            date: lastIncome.date,
+            amount: lastIncome.amount,
+            tenant: lastIncome.tenant,
+            paymentMethod: lastIncome.payment_method,
+            status: lastIncome.status
+          }
+        ]
+      }
+    }
+    return []
+  })
 
   if (!isPaid) {
     return (
@@ -37,31 +59,31 @@ export default async function RentalIncomeTable({
               {outstandingPayments?.map(payment => {
                 return (
                   <div
-                    // TODO: add payment.id to Model
-                    // key={payment.id}
+                    key={payment.id}
                     className='mb-2 w-full rounded-md bg-white p-4'
                   >
                     <div className='flex items-center justify-between border-b pb-4'>
                       <div>
-                        <p className='text-lg font-medium'>
+                        <p className='text-xl font-medium'>
                           {payment.propertyTitle}
                         </p>
                         <p className='text-sm text-gray-500'>
                           {payment.propertyLocation}
                         </p>
-                        <p className='text-sm text-gray-500'>{payment.date}</p>
-                        <p className='text-sm text-gray-500'>
-                          {payment.amount}
+                      </div>
+                    </div>
+                    <div className='flex w-full items-center justify-between pt-4'>
+                      <div>
+                        <p className='text-xl font-medium'>
+                          {formatDateToLocal(payment.date)}
                         </p>
                         <p className='text-sm text-gray-500'>
                           {payment.tenant}
                         </p>
+                        <p className='text-sm text-gray-500'>
+                          {formatCurrency(payment.amount)}
+                        </p>
                       </div>
-                      {/*<PropertyStatus*/}
-                      {/*  availability_status={property.availability_status}*/}
-                      {/*/>*/}
-                    </div>
-                    <div className='flex w-full items-center justify-between pt-4'>
                       {/*<div className='flex justify-end gap-2'>*/}
                       {/*  <UpdateProperty id={property.id} />*/}
                       {/*  <DeleteProperty id={property.id} />*/}
@@ -84,10 +106,10 @@ export default async function RentalIncomeTable({
                     Date
                   </th>
                   <th scope='col' className='px-3 py-5 font-medium'>
-                    Rent
+                    Tenant
                   </th>
                   <th scope='col' className='px-3 py-5 font-medium'>
-                    Tenant
+                    Rent
                   </th>
                   {/*<th scope='col' className='relative py-3 pl-6 pr-3'>*/}
                   {/*  <span className='sr-only'>Edit</span>*/}
@@ -97,7 +119,7 @@ export default async function RentalIncomeTable({
               <tbody className='bg-white'>
                 {outstandingPayments?.map(payment => (
                   <tr
-                    // key={payment.id}
+                    key={payment.id}
                     className='w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg'
                   >
                     <td className='whitespace-nowrap py-3 pl-6 pr-3'>
@@ -110,10 +132,10 @@ export default async function RentalIncomeTable({
                       {formatDateToLocal(payment.date)}
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {formatCurrency(payment.amount)}
+                      {payment.tenant}
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {payment.tenant}
+                      {formatCurrency(payment.amount)}
                     </td>
                     {/*<td className='whitespace-nowrap py-3 pl-6 pr-3'>*/}
                     {/*  <div className='flex justify-end gap-3'>*/}
@@ -136,37 +158,38 @@ export default async function RentalIncomeTable({
         <div className='inline-block min-w-full align-middle'>
           <div className='rounded-lg bg-gray-50 p-2 md:pt-0'>
             <div className='md:hidden'>
-              {properties?.map((property: Property) => {
+              {receivedPayments?.map(payment => {
                 return (
                   <div
-                    key={property.id}
+                    key={payment.id}
                     className='mb-2 w-full rounded-md bg-white p-4'
                   >
                     <div className='flex items-center justify-between border-b pb-4'>
                       <div>
-                        <p className='text-lg font-medium'>{property.title}</p>
+                        <p className='text-xl font-medium'>
+                          {payment.propertyTitle}
+                        </p>
                         <p className='text-sm text-gray-500'>
-                          {property.location}
+                          {payment.propertyLocation}
                         </p>
                       </div>
-                      <PropertyStatus
-                        availability_status={property.availability_status}
-                      />
                     </div>
                     <div className='flex w-full items-center justify-between pt-4'>
                       <div>
                         <p className='text-xl font-medium'>
-                          {formatCurrency(property.price)}
+                          {formatDateToLocal(payment.date)}
                         </p>
-                        <p>
-                          {property.size_sqm} m² • {property.bedrooms} Beds •{' '}
-                          {property.bathrooms} Baths
+                        <p className='text-sm text-gray-500'>
+                          {payment.tenant}
+                        </p>
+                        <p className='text-sm text-gray-500'>
+                          {formatCurrency(payment.amount)}
                         </p>
                       </div>
-                      <div className='flex justify-end gap-2'>
-                        {/*<UpdateProperty id={property.id} />*/}
-                        {/*<DeleteProperty id={property.id} />*/}
-                      </div>
+                      {/*<div className='flex justify-end gap-2'>*/}
+                      {/*  <UpdateProperty id={property.id} />*/}
+                      {/*  <DeleteProperty id={property.id} />*/}
+                      {/*</div>*/}
                     </div>
                   </div>
                 )
@@ -182,60 +205,46 @@ export default async function RentalIncomeTable({
                     Location
                   </th>
                   <th scope='col' className='px-3 py-5 font-medium'>
-                    Price
+                    Date
                   </th>
                   <th scope='col' className='px-3 py-5 font-medium'>
-                    Size (m²)
+                    Tenant
                   </th>
                   <th scope='col' className='px-3 py-5 font-medium'>
-                    Bedrooms
+                    Rent
                   </th>
-                  <th scope='col' className='px-3 py-5 font-medium'>
-                    Bathrooms
-                  </th>
-                  <th scope='col' className='px-3 py-5 font-medium'>
-                    Availability
-                  </th>
-                  <th scope='col' className='relative py-3 pl-6 pr-3'>
-                    <span className='sr-only'>Edit</span>
-                  </th>
+                  {/*<th scope='col' className='relative py-3 pl-6 pr-3'>*/}
+                  {/*  <span className='sr-only'>Edit</span>*/}
+                  {/*</th>*/}
                 </tr>
               </thead>
               <tbody className='bg-white'>
-                {properties?.map((property: Property) => (
+                {receivedPayments?.map(payment => (
                   <tr
-                    key={property.id}
+                    key={payment.id}
                     className='w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg'
                   >
                     <td className='whitespace-nowrap py-3 pl-6 pr-3'>
-                      <p>{property.title}</p>
+                      <p>{payment.propertyTitle}</p>
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {property.location}
+                      {payment.propertyLocation}
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {formatCurrency(property.price)}
+                      {formatDateToLocal(payment.date)}
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {property.size_sqm} m²
+                      {payment.tenant}
                     </td>
                     <td className='whitespace-nowrap px-3 py-3'>
-                      {property.bedrooms}
+                      {formatCurrency(payment.amount)}
                     </td>
-                    <td className='whitespace-nowrap px-3 py-3'>
-                      {property.bathrooms}
-                    </td>
-                    <td className='whitespace-nowrap px-3 py-3'>
-                      <PropertyStatus
-                        availability_status={property.availability_status}
-                      />
-                    </td>
-                    <td className='whitespace-nowrap py-3 pl-6 pr-3'>
-                      <div className='flex justify-end gap-3'>
-                        {/*<UpdateProperty id={property.id} />*/}
-                        {/*<DeleteProperty id={property.id} />*/}
-                      </div>
-                    </td>
+                    {/*<td className='whitespace-nowrap py-3 pl-6 pr-3'>*/}
+                    {/*  <div className='flex justify-end gap-3'>*/}
+                    {/*    <UpdateProperty id={property.id} />*/}
+                    {/*    <DeleteProperty id={property.id} />*/}
+                    {/*  </div>*/}
+                    {/*</td>*/}
                   </tr>
                 ))}
               </tbody>

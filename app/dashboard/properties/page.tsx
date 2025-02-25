@@ -1,6 +1,6 @@
 import Table from '@/app/ui/properties/table'
 import { Metadata } from 'next'
-import RentalIncomeTable from '@/app/ui/properties/rentalIncome-table'
+import RentalPaymentsTable from '@/app/ui/properties/rental-payments-table'
 
 export const metadata: Metadata = {
   title: 'Properties'
@@ -16,11 +16,11 @@ export default async function Page() {
       <div>
         <div className='mt-5'>
           <h1>Outstanding Rental Payments</h1>
-          <RentalIncomeTable isPaid={false} />
+          <RentalPaymentsTable isPaid={false} />
         </div>
         <div className='mt-5'>
           <h1>Received Rental Payments</h1>
-          <RentalIncomeTable isPaid={true} />
+          <RentalPaymentsTable isPaid={true} />
         </div>
       </div>
     </div>
