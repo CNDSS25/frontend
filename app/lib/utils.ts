@@ -1,4 +1,5 @@
 export const formatCurrency = (amount: number) => {
+  if (!amount) return ''
   return amount.toLocaleString('de-DE', {
     style: 'currency',
     currency: 'EUR'

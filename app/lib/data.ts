@@ -1,3 +1,5 @@
+import { Property } from '@/app/lib/definitions'
+
 export async function fetchProperties(token: any) {
   try {
     const apiUrl = process.env.property_service_url
@@ -20,7 +22,10 @@ export async function fetchProperties(token: any) {
   }
 }
 
-export async function fetchRentalIncome(token: any, isPaid: boolean) {
+export async function fetchRentalIncome(
+  token: any,
+  isPaid: boolean
+): Promise<Property[]> {
   try {
     const apiUrl = process.env.property_service_url
     const res = await fetch(
@@ -38,8 +43,29 @@ export async function fetchRentalIncome(token: any, isPaid: boolean) {
       throw new Error(`Failed to fetch properties: ${res.statusText}`)
     }
     const data = await res.json()
-    console.log(data.properties)
-    return data.properties
+    // TODO: create classes in definition
+    const properties: Property[] = data.properties.map((prop: any) => ({
+      id: prop.id,
+      title: prop.title,
+      description: prop.description,
+      price: prop.price,
+      location: prop.location,
+      size_sqm: prop.size_sqm,
+      bedrooms: prop.bedrooms,
+      bathrooms: prop.bathrooms,
+      property_type: prop.property_type,
+      availability_status: prop.availability_status,
+      rental_income: (prop.rental_income ?? []).map((income: any) => ({
+        date: income.date,
+        amount: income.amount,
+        tenant: income.tenant,
+        payment_method: income.payment_method,
+        status: income.status as 'Pending' | 'Paid'
+      }))
+    }))
+    //console.log(data.properties)
+    //return data.properties
+    return properties
   } catch (error) {
     console.error(error)
     return []
