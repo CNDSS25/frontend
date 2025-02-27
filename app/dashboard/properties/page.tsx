@@ -12,7 +12,6 @@ export default async function Page() {
   return (
     <div>
       <div>
-        <h1>Property Listing</h1>
         <div className='mt-4 flex items-center justify-between gap-2 md:mt-8'>
           <Search placeholder='Search properties...' />
           <CreateInvoice />
@@ -20,7 +19,7 @@ export default async function Page() {
         <Table />
       </div>
       <div>
-        {/*TODO: put it together maybe?*/}
+        {/*TODO: put it together!*/}
         <div className='mt-5'>
           <h1>Outstanding Rental Payments</h1>
           <RentalPaymentsTable isPaid={false} />
