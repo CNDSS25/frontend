@@ -54,8 +54,12 @@ export async function fetchRentalIncome(
       bedrooms: prop.bedrooms,
       bathrooms: prop.bathrooms,
       property_type: prop.property_type,
+      rental_status: prop.rental_status,
+      overdue_days: prop.overdue_days,
+      dueDate: prop.next_due_date,
       availability_status: prop.availability_status,
       rental_income: (prop.rental_income ?? []).map((income: any) => ({
+        id: income.id,
         date: income.date,
         amount: income.amount,
         tenant: income.tenant,
