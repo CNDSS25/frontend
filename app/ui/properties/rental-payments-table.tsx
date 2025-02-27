@@ -1,4 +1,4 @@
-// import { UpdateProperty, DeleteProperty } from '@/app/ui/properties/buttons'
+import { UpdateProperty, DeleteProperty } from '@/app/ui/properties/buttons'
 import { formatCurrency, formatDateToLocal } from '@/app/lib/utils'
 import { fetchRentalIncome } from '@/app/lib/data'
 import { cookies } from 'next/headers'
@@ -62,6 +62,10 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
                       {formatCurrency(payment.amount)}
                     </p>
                   </div>
+                  <div className='flex justify-end gap-2'>
+                    {/*<UpdateProperty id={property.id} />*/}
+                    {/*<DeleteProperty id={property.id} />*/}
+                  </div>
                 </div>
               </div>
             ))}
@@ -73,6 +77,7 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
               <tr>
                 <th className='px-4 py-5 font-medium sm:pl-6'>Title</th>
                 <th className='px-3 py-5 font-medium'>Location</th>
+                {/* TODO: which data is really needed? */}
                 <th className='px-3 py-5 font-medium'>Date</th>
                 <th className='px-3 py-5 font-medium'>Due Date</th>
                 <th className='px-3 py-5 font-medium'>Tenant</th>
@@ -102,6 +107,12 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
                   </td>
                   <td className='whitespace-nowrap px-3 py-3'>
                     {formatCurrency(payment.amount)}
+                  </td>
+                  <td className='whitespace-nowrap py-3 pl-6 pr-3'>
+                    <div className='flex justify-end gap-3'>
+                      {/*<UpdateProperty id={property.id} />*/}
+                      {/*<DeleteProperty id={property.id} />*/}
+                    </div>
                   </td>
                 </tr>
               ))}

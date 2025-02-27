@@ -1,4 +1,4 @@
-// import { UpdateProperty, DeleteProperty } from '@/app/ui/properties/buttons'
+import { UpdateProperty, DeleteProperty } from '@/app/ui/properties/buttons'
 import PropertyStatus from '@/app/ui/properties/status'
 import { formatCurrency } from '@/app/lib/utils'
 import { fetchProperties } from '@/app/lib/data'
@@ -43,8 +43,8 @@ export default async function PropertiesTable() {
                       </p>
                     </div>
                     <div className='flex justify-end gap-2'>
-                      {/*<UpdateProperty id={property.id} />*/}
-                      {/*<DeleteProperty id={property.id} />*/}
+                      <UpdateProperty id={property.id} />
+                      <DeleteProperty id={property.id} />
                     </div>
                   </div>
                 </div>
@@ -111,8 +111,8 @@ export default async function PropertiesTable() {
                   </td>
                   <td className='whitespace-nowrap py-3 pl-6 pr-3'>
                     <div className='flex justify-end gap-3'>
-                      {/*<UpdateProperty id={property.id} />*/}
-                      {/*<DeleteProperty id={property.id} />*/}
+                      <UpdateProperty id={property.id} />
+                      <DeleteProperty id={property.id} />
                     </div>
                   </td>
                 </tr>
