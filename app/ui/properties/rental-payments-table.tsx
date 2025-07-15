@@ -127,7 +127,7 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
 export default async function RentalPaymentsTable({
   isPaid
 }: {
-  isPaid: boolean
+  isPaid: boolean | null
 }) {
   const cookieStore = await cookies()
   const token = cookieStore.get('session_id')?.value

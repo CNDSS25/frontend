@@ -24,7 +24,7 @@ export async function fetchProperties(token: any) {
 
 export async function fetchRentalIncome(
   token: any,
-  isPaid: boolean
+  isPaid: boolean | null
 ): Promise<Property[]> {
   try {
     const apiUrl = process.env.property_service_url
@@ -43,6 +43,7 @@ export async function fetchRentalIncome(
       throw new Error(`Failed to fetch properties: ${res.statusText}`)
     }
     const data = await res.json()
+    // console.log(data.properties)
     // TODO: create classes in definition
     const properties: Property[] = data.properties.map((prop: any) => ({
       id: prop.id,
