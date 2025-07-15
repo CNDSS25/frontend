@@ -94,4 +94,16 @@ export type Property = {
   bathrooms: number
   property_type: string
   availability_status: string
+  rental_income: RentalIncome
+  rental_status: string
+  overdue_days: number
+  dueDate: string
+}
+
+export type RentalIncome = {
+  date: string
+  amount: number
+  tenant: string
+  payment_method: string
+  status: 'Pending' | 'Paid'
 }
